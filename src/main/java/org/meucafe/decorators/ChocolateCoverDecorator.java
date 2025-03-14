@@ -1,6 +1,5 @@
 package org.meucafe.decorators;
 
-import org.meucafe.ProductDecorator;
 import org.meucafe.interfaces.Product;
 
 public class ChocolateCoverDecorator extends ProductDecorator {
