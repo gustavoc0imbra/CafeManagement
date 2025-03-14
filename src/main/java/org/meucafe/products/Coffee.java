@@ -3,7 +3,7 @@ package org.meucafe.products;
 import org.meucafe.interfaces.Product;
 
 public class Coffee implements Product {
-    private String name = "Coffee";
+    private String name = "Café simples";
     private double price = 2.20;
 
 
