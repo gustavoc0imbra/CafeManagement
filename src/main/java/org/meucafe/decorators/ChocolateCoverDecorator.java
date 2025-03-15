@@ -1,9 +1,9 @@
 package org.meucafe.decorators;
 
-import org.meucafe.ProductDecorator;
 import org.meucafe.interfaces.Product;
 
 public class ChocolateCoverDecorator extends ProductDecorator {
+    private final String NAME = "Chocolate";
     private final double PRICE = 2.30;
 
     public ChocolateCoverDecorator(Product product) {
@@ -12,7 +12,7 @@ public class ChocolateCoverDecorator extends ProductDecorator {
 
     @Override
     public String getName() {
-        return super.getName() + ", Chocolate";
+        return super.getName() + ", " + NAME + " (R$" + PRICE + ")";
     }
 
     @Override

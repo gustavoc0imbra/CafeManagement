@@ -1,4 +1,4 @@
-package org.meucafe;
+package org.meucafe.decorators;
 
 import org.meucafe.interfaces.Product;
 
