@@ -6,15 +6,17 @@ import org.meucafe.decorators.MilkDecorator;
 import org.meucafe.facades.OrderInvoiceGenerator;
 import org.meucafe.factories.ProductFactory;
 import org.meucafe.interfaces.Product;
+import org.meucafe.interfaces.Subject;
+import org.meucafe.products.Cake;
+import org.meucafe.products.Coffee;
 
 import javax.swing.*;
-import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.Queue;
 
 public class Main {
-
-    static Queue<Order> pendingOrders = new ArrayDeque<Order>();
     static Order currentOrder = new Order();
+    static Kitchen kitchen = new Kitchen();
 
     public static void main(String[] args) {
         /*
@@ -35,10 +37,10 @@ public class Main {
 
                 do {
                     if (currentOrder.getCustomerName() == null) {
-                        currentOrder.setCustomerName(JOptionPane.showInputDialog(null, "Olá Bem-vindo(a)! Informe o nome do cliente para ser chamado:"));
+                        currentOrder.setCustomerName(JOptionPane.showInputDialog(null, "Olá Bem-vindo(a)!\nInforme o nome do cliente para ser chamado:"));
                     }
 
-                    productOption = Integer.parseInt(JOptionPane.showInputDialog(null, "Selecione um produto:\n1 - Café\n2 - Bolo\n0 - Voltar/Cancelar Pedido"));
+                    productOption = Integer.parseInt(JOptionPane.showInputDialog(null, "Selecione um produto:\n1 - "+ Coffee.placeholder +"\n2 - "+ Cake.placeholder+"\n0 - Voltar/Cancelar Pedido"));
 
                     if(productOption != 0) {
                         Product product = getProduct(productOption);
@@ -50,9 +52,13 @@ public class Main {
                                 do {
                                     additionalOption = getAdditional();
 
-                                    product = putAdditional(product, additionalOption);
+                                    if(additionalOption != 0) {
+                                        product = putAdditional(product, additionalOption);
+                                        hasMoreAdditionalOption = JOptionPane.showConfirmDialog(null, "Deseja colocar mais um adicional?") == JOptionPane.YES_OPTION;
+                                    }else {
+                                        hasMoreAdditionalOption = false;
+                                    }
 
-                                    hasMoreAdditionalOption = JOptionPane.showConfirmDialog(null, "Deseja colocar mais um adicional?") == JOptionPane.YES_OPTION;
                                 }while (hasMoreAdditionalOption);
                             }
 
@@ -73,9 +79,13 @@ public class Main {
                 if(!currentOrder.getProducts().isEmpty()) {
                     JOptionPane.showMessageDialog(null, currentOrder.formattedOutput());
                     OrderInvoiceGenerator.generateInvoice(currentOrder);
-                    pendingOrders.add(currentOrder);
+                    kitchen.update(currentOrder);
                 }
 
+            }
+
+            if(menuOption == MenuOptions.CHECK_ORDER_QUEUE) {
+                JOptionPane.showMessageDialog(null, kitchen.getOrdersStatus());
             }
 
         }while (menuOption != 0);
@@ -104,10 +114,6 @@ public class Main {
     }
 
     static Product putAdditional(Product product, int option) {
-        if(option == 0) {
-            throw new IllegalArgumentException("Adicional inválido!");
-        }
-
         switch(option) {
             case 1:
                 product = new MilkDecorator(product);
